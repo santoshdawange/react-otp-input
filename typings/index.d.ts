@@ -4,6 +4,7 @@ declare class OtpInput extends React.Component<OtpInputProps, OtpInputState, any
   static defaultProps: {
     numInputs: number;
     onChange: (otp: number) => void;
+    onBlur: (otp: number) => void;
     isDisabled: boolean;
     shouldAutoFocus: boolean;
     value: string;
@@ -20,6 +21,7 @@ declare class OtpInput extends React.Component<OtpInputProps, OtpInputState, any
   changeCodeAtFocus: (value: string) => void;
   handleOnPaste: (e: Object) => void;
   handleOnChange: (e: Object) => void;
+  handleOnBlur: (e: Object) => void;
   handleOnKeyDown: (e: Object) => void;
   handleOnInput: (e: Object) => void;
   renderInputs: () => any[];
@@ -38,7 +40,9 @@ interface OtpInputProps {
   isInputSecure?: boolean;
   numInputs: number;
   onChange: Function;
+  onBlur: Function;
   placeholder?: string;
+  secureChar?: string;
   separator?: Object;
   shouldAutoFocus?: boolean;
   value?: string;

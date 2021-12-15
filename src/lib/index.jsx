@@ -47,11 +47,11 @@ class SingleOtpInput extends PureComponent {
   getType = () => {
     const { isInputSecure, isInputNum } = this.props;
 
-    if (isInputSecure) {
-      return 'password';
-    }
+    // if (isInputSecure) {
+    //   return 'password';
+    // }
 
-    if (isInputNum) {
+    if (isInputNum || isInputSecure) {
       return 'tel';
     }
 
@@ -76,8 +76,11 @@ class SingleOtpInput extends PureComponent {
       value,
       className,
       isInputSecure,
+      secureChar,
       ...rest
     } = this.props;
+
+    let tempSecureChar = secureChar === '' && isInputSecure ? '*' : secureChar;
 
     return (
       <div className={className} style={{ display: 'flex', alignItems: 'center' }}>
@@ -104,7 +107,7 @@ class SingleOtpInput extends PureComponent {
           maxLength="1"
           ref={this.input}
           disabled={isDisabled}
-          value={value ? value : ''}
+          value={value && isInputSecure ? tempSecureChar : value && !isInputSecure ? value : ''}
           {...rest}
         />
         {!isLastChild && separator}
@@ -117,10 +120,12 @@ class OtpInput extends Component {
   static defaultProps = {
     numInputs: 4,
     onChange: (otp) => console.log(otp),
+    onBlur: (otp) => console.log(otp),
     isDisabled: false,
     shouldAutoFocus: false,
     value: '',
     isInputSecure: false,
+    secureChar: '*',
   };
 
   state = {
@@ -149,6 +154,14 @@ class OtpInput extends Component {
     const otpValue = otp.join('');
 
     onChange(otpValue);
+  };
+
+  // Helper to return OTP from input Blur
+  handleOtpBlur = (otp) => {
+    const { onBlur } = this.props;
+    const otpValue = otp.join('');
+
+    onBlur(otpValue);
   };
 
   isInputValueValid = (value) => {
@@ -281,6 +294,7 @@ class OtpInput extends Component {
       shouldAutoFocus,
       isInputNum,
       isInputSecure,
+      secureChar,
       className,
     } = this.props;
 
@@ -306,7 +320,16 @@ class OtpInput extends Component {
             this.setState({ activeInput: i });
             e.target.select();
           }}
-          onBlur={() => this.setState({ activeInput: -1 })}
+          onBlur={() => {
+            this.setState(
+              {
+                activeInput: -1,
+              },
+              () => {
+                if (this.state.activeInput === -1) return this.handleOtpBlur(this.getOtpValue());
+              }
+            );
+          }}
           separator={separator}
           inputStyle={inputStyle}
           focusStyle={focusStyle}
@@ -318,6 +341,7 @@ class OtpInput extends Component {
           shouldAutoFocus={shouldAutoFocus}
           isInputNum={isInputNum}
           isInputSecure={isInputSecure}
+          secureChar={secureChar}
           className={className}
           data-cy={dataCy && `${dataCy}-${i}`}
           data-testid={dataTestId && `${dataTestId}-${i}`}

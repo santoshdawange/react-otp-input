@@ -19,11 +19,16 @@ class Demo extends Component {
       minLength: 0,
       maxLength: 40,
       placeholder: '',
+      secureChar: '',
     };
   }
 
   handleOtpChange = (otp) => {
     this.setState({ otp });
+  };
+
+  handleOtpBlur = (otp) => {
+    // console.log(otp);
   };
 
   handleChange = (e) => {
@@ -32,6 +37,20 @@ class Demo extends Component {
 
   handleNumInputsChange = (e) => {
     let numInputs = e.target.value;
+    const { minLength, maxLength } = this.state;
+
+    if (numInputs < minLength || numInputs > maxLength) {
+      numInputs = 4;
+
+      console.error(`Please enter a value between ${minLength} and ${maxLength}`);
+    }
+
+    this.setState({ [e.target.name]: parseInt(numInputs, 10) });
+  };
+
+  handleNumInputsBlur = (e) => {
+    let numInputs = e.target.value;
+    console.log('numInputs', numInputs);
     const { minLength, maxLength } = this.state;
 
     if (numInputs < minLength || numInputs > maxLength) {
@@ -69,6 +88,7 @@ class Demo extends Component {
       minLength,
       maxLength,
       placeholder,
+      secureChar,
     } = this.state;
 
     return (
@@ -88,6 +108,7 @@ class Demo extends Component {
                 type="number"
                 value={numInputs}
                 onChange={this.handleNumInputsChange}
+                onBlur={this.handleNumInputsBlur}
                 min={minLength}
                 max={maxLength}
               />
@@ -116,6 +137,12 @@ class Demo extends Component {
             <label htmlFor="placeholder">
               placeholder
               <input id="placeholder" name="placeholder" type="text" value={placeholder} onChange={this.handleChange} />
+            </label>
+          </div>
+          <div className="side-bar__segment">
+            <label htmlFor="secureChar">
+              Secure Char
+              <input id="secureChar" name="secureChar" type="text" value={secureChar} onChange={this.handleChange} />
             </label>
           </div>
           <div className="side-bar__segment">
@@ -176,12 +203,14 @@ class Demo extends Component {
                   hasErrored={hasErrored}
                   errorStyle="error"
                   onChange={this.handleOtpChange}
+                  onBlur={this.handleOtpBlur}
                   separator={<span>{separator}</span>}
                   isInputNum={isInputNum}
                   isInputSecure={isInputSecure}
                   shouldAutoFocus
                   value={otp}
                   placeholder={placeholder}
+                  secureChar={secureChar}
                 />
               </div>
               <div className="btn-row">
