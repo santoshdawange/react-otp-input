@@ -1,10 +1,4 @@
-/.github
-/demo
-/src
-.all-contributorsrc
-.babelrc.json
-.eslintignore
-.eslintrc.json
-.prettierignore
-.prettierrc.json
+docs
+src
+.babelrc
 webpack.config.js
